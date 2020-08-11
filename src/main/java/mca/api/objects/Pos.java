@@ -8,8 +8,7 @@ import net.minecraft.util.math.BlockPos;
 public class Pos {
 	public static final Pos ORIGIN = new Pos(BlockPos.ORIGIN);
 	
-	@Getter
-	private BlockPos blockPos;
+	@Getter private BlockPos blockPos;
 	
 	public Pos(int x, int y, int z) {
 		blockPos = new BlockPos(x, y, z);

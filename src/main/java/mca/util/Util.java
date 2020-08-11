@@ -1,25 +1,6 @@
 package mca.util;
 
-import static org.apache.http.protocol.HTTP.USER_AGENT;
-
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.Random;
-import java.util.TimerTask;
-import java.util.UUID;
-
-import javax.annotation.Nullable;
-
-import org.apache.commons.io.IOUtils;
-
 import com.google.gson.Gson;
-
 import mca.api.objects.Pos;
 import mca.api.wrappers.WorldWrapper;
 import mca.core.MCA;
@@ -28,9 +9,20 @@ import net.minecraft.entity.Entity;
 import net.minecraft.init.Blocks;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import org.apache.commons.io.IOUtils;
+
+import javax.annotation.Nullable;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.util.*;
+
+import static org.apache.http.protocol.HTTP.USER_AGENT;
 
 public class Util {
-    private static final String RESOURCE_PREFIX = "assets/mca/";
+    private static final String RESOURCE_PREFIX = "/assets/mca/";
 
     /**
      * Finds a y position given an x,y,z coordinate triple that is assumed to be the world's "ground".
@@ -61,8 +53,6 @@ public class Util {
         String location = RESOURCE_PREFIX + path;
 
         try {
-            System.out.println("tryna read from " + MCA.class.getResource(location).toString());
-            System.out.println("tryna " + location);
             data = IOUtils.toString(new InputStreamReader(MCA.class.getResourceAsStream(location)));
         } catch (IOException e) {
             throw new RuntimeException("Failed to read resource from JAR: " + location);

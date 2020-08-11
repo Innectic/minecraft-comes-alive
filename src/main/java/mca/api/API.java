@@ -1,22 +1,6 @@
 package mca.api;
 
-import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Random;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-
-import org.apache.commons.io.IOUtils;
-
 import com.google.common.base.Charsets;
-
 import mca.api.objects.APIButton;
 import mca.api.objects.Gift;
 import mca.api.objects.Player;
@@ -31,9 +15,14 @@ import mca.util.Util;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.StringUtils;
 import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
 import net.minecraftforge.fml.common.registry.VillagerRegistry;
+import org.apache.commons.io.IOUtils;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import java.io.InputStream;
+import java.util.*;
 
 /**
  * Class API handles interaction with MCA's configurable options via JSON in the resources folder
@@ -44,20 +33,19 @@ public class API {
     private static List<String> maleNames = new ArrayList<>();
     private static List<String> femaleNames = new ArrayList<>();
     private static List<SkinsGroup> skinGroups = new ArrayList<>();
-    private static Random rng;
+    private static Random rng = new Random();
 
     /**
      * Performs initialization of the API
      */
-    public static void init() {
-        rng = new Random();
-
+    public static void init(Class<?> clazz) {
         // Load skins
         SkinsGroup[] skins = Util.readResourceAsJSON("api/skins.json", SkinsGroup[].class);
+        System.out.println(Arrays.toString(skins));
         Collections.addAll(skinGroups, skins);
 
         // Load names
-        InputStream namesStream = MCA.class.getResourceAsStream("/assets/mca/lang/names.lang");
+        InputStream namesStream = clazz.getResourceAsStream("/assets/mca/lang/names.lang");
         try {
             // read in all names and process into the correct list
             List<String> lines = IOUtils.readLines(namesStream, Charsets.UTF_8);
@@ -65,7 +53,7 @@ public class API {
             lines.stream().filter((l) -> l.contains("name.female")).forEach((l) -> femaleNames.add(l.split("\\=")[1]));
         } catch (Exception e) {
             MCA.getLogger().fatal(e);
-            throw new RuntimeException("Failed to load all NPC names from file", e);
+//            throw new RuntimeException("Failed to load all NPC names from file", e);
         }
 
         // Read in buttons

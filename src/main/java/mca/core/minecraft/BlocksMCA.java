@@ -1,7 +1,5 @@
 package mca.core.minecraft;
 
-import java.util.ArrayList;
-
 import mca.blocks.BlockVillagerSpawner;
 import mca.core.MCA;
 import net.minecraft.block.Block;
@@ -17,12 +15,15 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraftforge.registries.IForgeRegistry;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public final class BlocksMCA {
     public static final Block ROSE_GOLD_BLOCK = new BlockOre();
     public static final Block ROSE_GOLD_ORE = new BlockOre();
     public static final BlockVillagerSpawner VILLAGER_SPAWNER = new BlockVillagerSpawner();
 
-    private static final ArrayList<Block> BLOCKS = new ArrayList<>();
+    private static final List<Block> BLOCKS = new ArrayList<>();
 
     public static void register(RegistryEvent.Register<Block> event) {
         ROSE_GOLD_BLOCK.setHardness(3.0F).setResistance(5.0F).setCreativeTab(MCA.creativeTab);
@@ -70,9 +71,6 @@ public final class BlocksMCA {
     @SideOnly(Side.CLIENT)
     public static void registerModelMeshers() {
         ItemModelMesher mesher = Minecraft.getMinecraft().getRenderItem().getItemModelMesher();
-
-        for (Block block : BLOCKS) {
-            mesher.register(Item.getItemFromBlock(block), 0, new ModelResourceLocation(block.getRegistryName(), "inventory"));
-        }
+        BLOCKS.forEach(block -> mesher.register(Item.getItemFromBlock(block), 0, new ModelResourceLocation(block.getRegistryName(), "inventory")));
     }
 }

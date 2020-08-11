@@ -96,7 +96,7 @@ public class MCA {
 
     @EventHandler
     public void postInit(FMLPostInitializationEvent event) {
-        API.init();
+        API.init(getClass());
     }
 
     @EventHandler

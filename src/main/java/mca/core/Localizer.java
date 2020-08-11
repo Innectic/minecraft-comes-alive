@@ -1,20 +1,13 @@
 package mca.core;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Random;
-import java.util.stream.Collectors;
-
+import com.google.common.base.Charsets;
+import net.minecraft.util.StringUtils;
 import org.apache.commons.io.IOUtils;
 
-import com.google.common.base.Charsets;
-
-import net.minecraft.util.StringUtils;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class Localizer {
     private Map<String, String> localizerMap = new HashMap<>();
