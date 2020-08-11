@@ -1,25 +1,7 @@
 package mca.core;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.net.URLConnection;
-import java.nio.charset.StandardCharsets;
-import java.util.Arrays;
-import java.util.Comparator;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Random;
-
-import org.apache.commons.io.FileUtils;
-import org.apache.logging.log4j.Logger;
-
 import com.google.gson.Gson;
-
+import lombok.Getter;
 import mca.api.API;
 import mca.command.CommandAdminMCA;
 import mca.command.CommandMCA;
@@ -28,6 +10,7 @@ import mca.core.forge.GuiHandler;
 import mca.core.forge.NetMCA;
 import mca.core.forge.ServerProxy;
 import mca.core.minecraft.ItemsMCA;
+import mca.core.minecraft.MCACreativeTab;
 import mca.core.minecraft.ProfessionsMCA;
 import mca.core.minecraft.RoseGoldOreGenerator;
 import mca.entity.EntityGrimReaper;
@@ -35,21 +18,27 @@ import mca.entity.EntityVillagerMCA;
 import mca.enums.EnumGender;
 import mca.util.Util;
 import net.minecraft.creativetab.CreativeTabs;
-import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventHandler;
 import net.minecraftforge.fml.common.SidedProxy;
-import net.minecraftforge.fml.common.event.FMLInitializationEvent;
-import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
-import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
-import net.minecraftforge.fml.common.event.FMLServerStartingEvent;
-import net.minecraftforge.fml.common.event.FMLServerStoppingEvent;
+import net.minecraftforge.fml.common.event.*;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
 import net.minecraftforge.fml.common.registry.EntityRegistry;
 import net.minecraftforge.fml.common.registry.GameRegistry;
+import org.apache.commons.io.FileUtils;
+import org.apache.logging.log4j.Logger;
+
+import java.io.File;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.net.URLConnection;
+import java.nio.charset.StandardCharsets;
+import java.util.*;
 
 @Mod(modid = MCA.MODID, name = MCA.NAME, version = MCA.VERSION, guiFactory = "mca.client.MCAGuiFactory")
 public class MCA {
@@ -59,35 +48,14 @@ public class MCA {
     @SidedProxy(clientSide = "mca.core.forge.ClientProxy", serverSide = "mca.core.forge.ServerProxy")
     public static ServerProxy proxy;
     public static CreativeTabs creativeTab;
-    @Mod.Instance
-    private static MCA instance;
-    private static Logger logger;
-    private static Localizer localizer;
-    private static Config config;
+    @Getter @Mod.Instance private static MCA instance;
+    @Getter private static Logger logger;
+    @Getter private static Localizer localizer;
+    @Getter private static Config config;
     private static long startupTimestamp;
     public static String latestVersion = "";
     public static boolean updateAvailable = false;
-    public String[] supporters = new String[0];
-
-    public static Logger getLog() {
-        return logger;
-    }
-
-    public static MCA getInstance() {
-        return instance;
-    }
-
-    public static Localizer getLocalizer() {
-        return localizer;
-    }
-
-    public static Config getConfig() {
-        return config;
-    }
-
-    public static long getStartupTimestamp() {
-        return startupTimestamp;
-    }
+    public List<String> supporters = new ArrayList<>();
 
     @EventHandler
     public void preInit(FMLPreInitializationEvent event) {
@@ -97,31 +65,27 @@ public class MCA {
         proxy.registerEntityRenderers();
         localizer = new Localizer();
         config = new Config(event);
-        creativeTab = new CreativeTabs("MCA") {
-            @Override
-            public ItemStack getTabIconItem() {
-                return new ItemStack(ItemsMCA.ENGAGEMENT_RING);
-            }
-        };
+        creativeTab = new MCACreativeTab();
+
         MinecraftForge.EVENT_BUS.register(new EventHooks());
         NetworkRegistry.INSTANCE.registerGuiHandler(this, new GuiHandler());
         NetMCA.registerMessages();
 
-        if (MCA.getConfig().allowUpdateChecking) {
+        if (MCA.getConfig().isAllowUpdateChecking()) {
             latestVersion = Util.httpGet("https://minecraftcomesalive.com/api/latest");
             if (!latestVersion.equals(VERSION) && !latestVersion.equals("")) {
                 updateAvailable = true;
-                MCA.getLog().warn("An update for Minecraft Comes Alive is available: v" + latestVersion);
+                MCA.getLogger().warn("An update for Minecraft Comes Alive is available: v" + latestVersion);
             }
         }
 
-        supporters = Util.httpGet("https://minecraftcomesalive.com/api/supporters").split(",");
-        MCA.getLog().info("Loaded " + supporters.length + " supporters.");
+        supporters = Arrays.asList(Util.httpGet("https://minecraftcomesalive.com/api/supporters").split(","));
+        MCA.getLogger().info("Loaded " + supporters.size() + " supporters.");
     }
 
     @EventHandler
     public void init(FMLInitializationEvent event) {
-        GameRegistry.registerWorldGenerator(new RoseGoldOreGenerator(), MCA.getConfig().roseGoldSpawnWeight);
+        GameRegistry.registerWorldGenerator(new RoseGoldOreGenerator(), MCA.getConfig().getRoseGoldSpawnWeight());
         EntityRegistry.registerModEntity(new ResourceLocation(MODID, "EntityVillagerMCA"), EntityVillagerMCA.class, EntityVillagerMCA.class.getSimpleName(), 1120, this, 50, 2, true);
         EntityRegistry.registerModEntity(new ResourceLocation(MODID, "GrimReaperMCA"), EntityGrimReaper.class, EntityGrimReaper.class.getSimpleName(), 1121, this, 50, 2, true);
         ProfessionsMCA.registerCareers();
@@ -147,15 +111,11 @@ public class MCA {
     }
 
     public String getRandomSupporter() {
-        if (supporters.length > 0) {
-            return supporters[new Random().nextInt(supporters.length)];
-        } else {
-            return API.getRandomName(EnumGender.getRandom());
-        }
+        return supporters.size() > 0 ? supporters.get(new Random().nextInt(supporters.size())) : API.getRandomName(EnumGender.getRandom());
     }
 
     public void checkForCrashReports() {
-        if (MCA.getConfig().allowCrashReporting) {
+        if (MCA.getConfig().isAllowCrashReporting()) {
             File crashReportsFolder = new File(System.getProperty("user.dir") + "/crash-reports/");
             File[] crashReportFiles = crashReportsFolder.listFiles(File::isFile);
             try {
@@ -163,7 +123,7 @@ public class MCA {
                     Optional<File> newestFile = Arrays.stream(crashReportFiles).max(Comparator.comparingLong(File::lastModified));
                     if (newestFile.isPresent() && newestFile.get().lastModified() > startupTimestamp) {
                         // Raw Java for sending the POST request as the HttpClient from Apache libs is not present on servers.
-                        MCA.getLog().warn("Crash detected! Attempting to upload report...");
+                        MCA.getLogger().warn("Crash detected! Attempting to upload report...");
                         Map<String, String> payload = new HashMap<>();
                         payload.put("minecraft_version", FMLCommonHandler.instance().getMinecraftServerInstance().getMinecraftVersion());
                         payload.put("operating_system", System.getProperty("os.name") + " (" + System.getProperty("os.arch") + ") version " + System.getProperty("os.version"));
@@ -185,15 +145,12 @@ public class MCA {
                         os.write(out);
                         os.flush();
                         os.close();
-                        if (http.getResponseCode() != 200) {
-                            MCA.getLog().error("Failed to submit crash report. Non-OK response code returned: " + http.getResponseCode());
-                        } else {
-                            MCA.getLog().warn("Crash report submitted successfully.");
-                        }
+                        if (http.getResponseCode() != 200) MCA.getLogger().error("Failed to submit crash report. Non-OK response code returned: " + http.getResponseCode());
+                        else MCA.getLogger().warn("Crash report submitted successfully.");
                     }
                 }
             } catch (IOException e) {
-                MCA.getLog().error("An unexpected error occurred while attempting to submit the crash report.", e);
+                MCA.getLogger().error("An unexpected error occurred while attempting to submit the crash report.", e);
             }
         }
     }

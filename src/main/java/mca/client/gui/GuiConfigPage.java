@@ -11,7 +11,7 @@ public class GuiConfigPage extends GuiConfig {
     public GuiConfigPage(GuiScreen parent) {
         this(parent,
                 MCA.getConfig().getCategories(),
-                MCA.MODID, false, false, GuiConfig.getAbridgedConfigPath(MCA.getConfig().getInstance().toString()));
+                MCA.MODID, false, false, GuiConfig.getAbridgedConfigPath(MCA.getConfig().getConfig().toString()));
     }
 
     public GuiConfigPage(GuiScreen parentScreen, List<IConfigElement> configElements, String modID, boolean allRequireWorldRestart, boolean allRequireMcRestart, String title) {

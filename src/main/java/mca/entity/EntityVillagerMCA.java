@@ -173,11 +173,11 @@ public class EntityVillagerMCA extends VillagerPlatform {
 
     @Override
     protected void applyAttributes() {
-        this.getEntityAttribute(SharedMonsterAttributes.MAX_HEALTH).setBaseValue(MCA.getConfig().villagerMaxHealth);
+        this.getEntityAttribute(SharedMonsterAttributes.MAX_HEALTH).setBaseValue(MCA.getConfig().getVillagerMaxHealth());
         this.getEntityAttribute(SharedMonsterAttributes.FOLLOW_RANGE).setBaseValue(32.0D);
 
-        if (this.getHealth() <= MCA.getConfig().villagerMaxHealth) {
-            this.setHealth(MCA.getConfig().villagerMaxHealth);
+        if (this.getHealth() <= MCA.getConfig().getVillagerMaxHealth()) {
+            this.setHealth(MCA.getConfig().getVillagerMaxHealth());
         }
     }
 
@@ -219,7 +219,7 @@ public class EntityVillagerMCA extends VillagerPlatform {
     
     @Override
     protected void afterApplyingDamage(DamageSource source, float amount) {
-        if (MCA.getConfig().enableInfection && getProfessionForge() != ProfessionsMCA.guard && source.getImmediateSource() instanceof EntityZombie && getRNG().nextFloat() < MCA.getConfig().infectionChance / 100) {
+        if (MCA.getConfig().isEnableInfection() && getProfessionForge() != ProfessionsMCA.guard && source.getImmediateSource() instanceof EntityZombie && getRNG().nextFloat() < MCA.getConfig().getInfectionChance() / 100) {
             set(IS_INFECTED, true);
         }
     }
@@ -244,8 +244,8 @@ public class EntityVillagerMCA extends VillagerPlatform {
     public void onDeath(DamageSource cause) {
         if (!world.isRemote) {
             String causeName = cause.getImmediateSource() == null ? cause.getDamageType() : cause.getImmediateSource().getName();
-            if (MCA.getConfig().logVillagerDeaths) {
-                MCA.getLog().info("Villager death: " + get(VILLAGER_NAME) + ". Caused by: " + causeName + ". UUID: " + this.getUniqueID().toString());
+            if (MCA.getConfig().isLogVillagerDeaths()) {
+                MCA.getLogger().info("Villager death: " + get(VILLAGER_NAME) + ". Caused by: " + causeName + ". UUID: " + this.getUniqueID().toString());
             }
 
             inventory.dropAllItems();
@@ -299,7 +299,7 @@ public class EntityVillagerMCA extends VillagerPlatform {
         String professionName = age != EnumAgeState.ADULT ? age.localizedName() : careerName.getUnformattedText();
         String color = this.getProfessionForge() == ProfessionsMCA.bandit ? Constants.Color.RED : this.getProfessionForge() == ProfessionsMCA.guard ? Constants.Color.GREEN : "";
 
-        return new TextComponentString(String.format("%1$s%2$s%3$s (%4$s)", color, MCA.getConfig().villagerChatPrefix, get(VILLAGER_NAME), professionName));
+        return new TextComponentString(String.format("%1$s%2$s%3$s (%4$s)", color, MCA.getConfig().getVillagerChatPrefix(), get(VILLAGER_NAME), professionName));
     }
 
     @Override
@@ -490,7 +490,7 @@ public class EntityVillagerMCA extends VillagerPlatform {
                 thePlayer.sendMessage(String.format("%1$s: %2$s", getDisplayName().getFormattedText(), phrase));
             }
         } else {
-            MCA.getLog().warn(new Throwable("Say called on player that is not present!"));
+            MCA.getLogger().warn(new Throwable("Say called on player that is not present!"));
         }
     }
 
@@ -523,10 +523,10 @@ public class EntityVillagerMCA extends VillagerPlatform {
         successChance -= button.getConstraints().contains(EnumConstraint.ADULTS) ? 0.25F : 0.0F;
         successChance += (history.getHearts() / 10.0D) * 0.025F;
 
-        if (MCA.getConfig().enableDiminishingReturns) successChance -= history.getInteractionFatigue() * 0.05F;
+        if (MCA.getConfig().isEnableDiminishingReturns()) successChance -= history.getInteractionFatigue() * 0.05F;
 
         boolean succeeded = rand.nextFloat() < successChance;
-        if (MCA.getConfig().enableDiminishingReturns && succeeded)
+        if (MCA.getConfig().isEnableDiminishingReturns() && succeeded)
             heartsBoost -= history.getInteractionFatigue() * 0.05F;
 
         history.changeInteractionFatigue(1);
@@ -539,7 +539,7 @@ public class EntityVillagerMCA extends VillagerPlatform {
         PlayerHistory history = getPlayerHistoryFor(player.getUniqueID());
         java.util.Optional<APIButton> button = API.getButtonById(guiKey, buttonId);
         if (!button.isPresent()) {
-            MCA.getLog().warn("Button not found for key and ID: " + guiKey + ", " + buttonId);
+            MCA.getLogger().warn("Button not found for key and ID: " + guiKey + ", " + buttonId);
         } else if (button.get().isInteraction()) handleInteraction(player, history, button.get());
 
         switch (buttonId) {
@@ -575,7 +575,7 @@ public class EntityVillagerMCA extends VillagerPlatform {
                 setHangout(player);
                 break;
             case "gui.button.trade":
-                if (MCA.getConfig().allowTrading) {
+                if (MCA.getConfig().isAllowTrading()) {
                     setCustomer(player.getPlayer());
                     player.displayVillagerTradeGui(this);
                 } else {

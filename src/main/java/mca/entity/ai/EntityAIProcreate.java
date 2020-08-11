@@ -39,7 +39,7 @@ public class EntityAIProcreate extends EntityAIBase {
                 p.inventory.addItemStackToInventory(new ItemStack(villager.getRNG().nextBoolean() ? ItemsMCA.BABY_BOY : ItemsMCA.BABY_GIRL));
                 PlayerSaveData.get(p).setBabyPresent(true);
 
-                if (villager.getRNG().nextFloat() < MCA.getConfig().chanceToHaveTwins / 100) {
+                if (villager.getRNG().nextFloat() < MCA.getConfig().getChanceToHaveTwins() / 100) {
                 	p.inventory.addItemStackToInventory(new ItemStack(villager.getRNG().nextBoolean() ? ItemsMCA.BABY_BOY : ItemsMCA.BABY_GIRL));
                 }
             });

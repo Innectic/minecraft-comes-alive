@@ -29,7 +29,7 @@ public class VillageHelper {
     }
 
     private static void spawnGuards(WorldWrapper world, Village village) {
-        int guardCapacity = village.getNumVillagers() / MCA.getConfig().guardSpawnRate;
+        int guardCapacity = village.getNumVillagers() / MCA.getConfig().getGuardSpawnRate();
         int guards = 0;
 
         // Grab all villagers in the area

@@ -22,7 +22,7 @@ public class BlockVillagerSpawner extends BlockPlatform {
     @Override
     public void onUpdate(WorldWrapper world, Pos pos, IBlockState state, Random random) {
         int nearbyVillagers = world.getEntitiesInArea(EntityVillagerMCA.class, new AxisAlignedBB(pos.getBlockPos()).expand(32D, 32D, 32D)).size();
-        if (nearbyVillagers < MCA.getConfig().villagerSpawnerCap) {
+        if (nearbyVillagers < MCA.getConfig().getVillagerSpawnerCap()) {
             int yMod = 0;
 
             // Start from the current point possible and count up until air is hit. This allows the spawner to
@@ -42,6 +42,6 @@ public class BlockVillagerSpawner extends BlockPlatform {
             }
         }
 
-        world.scheduleUpdate(pos, this, MCA.getConfig().villagerSpawnerRateMinutes * 72000);
+        world.scheduleUpdate(pos, this, MCA.getConfig().getVillagerSpawnerRateMinutes() * 72000);
     }
 }

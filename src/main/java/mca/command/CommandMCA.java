@@ -29,7 +29,7 @@ public class CommandMCA extends CommandBase {
     @Override
     public void execute(MinecraftServer server, ICommandSender commandSender, String[] input) throws CommandException {
         try {
-            if (!MCA.getConfig().allowPlayerMarriage) {
+            if (!MCA.getConfig().isAllowPlayerMarriage()) {
                 sendMessage(commandSender, "MCA commands have been disabled by the server administrator.");
                 return;
             }
@@ -43,7 +43,7 @@ public class CommandMCA extends CommandBase {
             String subcommand = input[0].toLowerCase();
             String[] arguments = Arrays.copyOfRange(input, 1, input.length);
             
-            MCA.getLog().info(player.getName() + " entered command " + Arrays.toString(input));
+            MCA.getLogger().info(player.getName() + " entered command " + Arrays.toString(input));
 
             Optional<Player> target = Optional.empty();
             if (arguments.length > 0) {

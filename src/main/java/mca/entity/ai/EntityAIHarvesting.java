@@ -64,7 +64,7 @@ public class EntityAIHarvesting extends AbstractEntityAIChore {
         //no crop next to villager -> long range scan
         //limited to once a minute to reduce CPU usage
         if (target == null && villager.ticksExisted - lastCropScan > 1200) {
-            //MCA.getLog().info(villager.getName() + " scans for crops");
+            //MCA.getLogger().info(villager.getName() + " scans for crops");
             lastCropScan = villager.ticksExisted;
             target = searchCrop(32, 16);
         }
@@ -72,11 +72,11 @@ public class EntityAIHarvesting extends AbstractEntityAIChore {
         if (target == null) {
             if (villager.getWorkplace().getY() > 0 && villager.getDistanceSq(villager.getWorkplace().getBlockPos()) > 256.0D) {
                 //go to their workplace (if set and more than 16 blocks away)
-                //MCA.getLog().info(villager.getName() + " goes to workplace");
+                //MCA.getLogger().info(villager.getName() + " goes to workplace");
                 villager.moveTowardsBlock(villager.getWorkplace());
             } else {
                 //failed (no crop on range), allows now other, lower priority tasks to interrupt
-                //MCA.getLog().info(villager.getName() + " idles");
+                //MCA.getLogger().info(villager.getName() + " idles");
                 blockWork = villager.ticksExisted + 100 + villager.getRNG().nextInt(100);
             }
         } else {
@@ -104,7 +104,7 @@ public class EntityAIHarvesting extends AbstractEntityAIChore {
                         IProperty<Integer> property = (IProperty<Integer>) crop.getBlockState().getProperty("age");
                         villager.world.setBlockState(target, state.withProperty(property, 0));
                     } catch (Exception e) { // age property may have some issues on certain mods, if it errors just set to air
-                        MCA.getLog().warn("Error resetting crop age at " + target.toString() + "! Setting to air.");
+                        MCA.getLogger().warn("Error resetting crop age at " + target.toString() + "! Setting to air.");
                         villager.world.setBlockToAir(target);
                     }
                 }

@@ -112,7 +112,7 @@ public class EventHooks {
         Entity entity = event.getEntity();
 
         if (world.isRemote) return;
-        if (!MCA.getConfig().overwriteOriginalVillagers) return;
+        if (!MCA.getConfig().isOverwriteOriginalVillagers()) return;
 
         // Replace original villagers
         if (entity.getClass().equals(EntityVillager.class)) {

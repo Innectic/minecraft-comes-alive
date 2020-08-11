@@ -74,7 +74,7 @@ public class DataManagerWrapper {
 			} else if (serializer == DataSerializers.BYTE) {
 				nbt.setInteger(paramName, (Byte)paramValue);
 			} else {
-				MCA.getLog().error(String.format("Unrecognized value type `%s` on attempt to save param `%s`", paramValue.getClass().getName(), paramName));
+				MCA.getLogger().error(String.format("Unrecognized value type `%s` on attempt to save param `%s`", paramValue.getClass().getName(), paramName));
 			}
 		}
 	}
@@ -107,7 +107,7 @@ public class DataManagerWrapper {
 			} else if (serializer == DataSerializers.BYTE) {
 				vanillaManager.set((DataParameter<T>)param, (T)Integer.valueOf(nbt.getInteger(paramName)));
 			} else {
-				MCA.getLog().error(String.format("Unrecognized serializer on attempt to read data param `%s`: %s", paramName, serializer.getClass().getName()));
+				MCA.getLogger().error(String.format("Unrecognized serializer on attempt to read data param `%s`: %s", paramName, serializer.getClass().getName()));
 			}
 		}
 	}

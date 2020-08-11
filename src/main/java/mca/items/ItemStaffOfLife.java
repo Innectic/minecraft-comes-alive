@@ -29,7 +29,7 @@ public class ItemStaffOfLife extends Item {
 
     @Override
     public ActionResult<ItemStack> onItemRightClick(World worldIn, EntityPlayer playerIn, EnumHand handIn) {
-        if (!MCA.getConfig().enableRevivals)
+        if (!MCA.getConfig().isEnableRevivals())
             playerIn.sendMessage(new TextComponentString(MCA.getLocalizer().localize("notify.revival.disabled")));
 
         playerIn.openGui(MCA.getInstance(), Constants.GUI_ID_STAFFOFLIFE, playerIn.world, 0, 0, 0);

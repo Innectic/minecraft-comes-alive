@@ -4,37 +4,38 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+import lombok.Getter;
 import net.minecraftforge.common.config.ConfigElement;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.fml.client.config.IConfigElement;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 
 public final class Config implements Serializable {
-    private transient final Configuration config;
+    @Getter private transient final Configuration config;
 
-    public boolean overwriteOriginalVillagers;
-    public boolean enableDiminishingReturns;
-    public boolean enableInfection;
-    public int infectionChance;
-    public boolean allowGrimReaper;
-    public int guardSpawnRate;
-    public int chanceToHaveTwins;
-    public int marriageHeartsRequirement;
-    public int roseGoldSpawnWeight;
-    public int babyGrowUpTime;
-    public int childGrowUpTime;
-    public int villagerSpawnerCap;
-    public int villagerSpawnerRateMinutes;
-    public int villagerMaxHealth;
-    public boolean allowTrading;
-    public boolean logVillagerDeaths;
-    public boolean enableRevivals;
-    public String villagerChatPrefix;
-    public boolean allowPlayerMarriage;
-    public boolean enableAdminCommands;
-    public boolean allowCrashReporting;
-    public boolean allowUpdateChecking;
-    public boolean allowRoseGoldGeneration;
+    @Getter private boolean overwriteOriginalVillagers;
+    @Getter private boolean enableDiminishingReturns;
+    @Getter private boolean enableInfection;
+    @Getter private int infectionChance;
+    @Getter private boolean allowGrimReaper;
+    @Getter private int guardSpawnRate;
+    @Getter private int chanceToHaveTwins;
+    @Getter private int marriageHeartsRequirement;
+    @Getter private int roseGoldSpawnWeight;
+    @Getter private int babyGrowUpTime;
+    @Getter private int childGrowUpTime;
+    @Getter private int villagerSpawnerCap;
+    @Getter private int villagerSpawnerRateMinutes;
+    @Getter private int villagerMaxHealth;
+    @Getter private boolean allowTrading;
+    @Getter private boolean logVillagerDeaths;
+    @Getter private boolean enableRevivals;
+    @Getter private String villagerChatPrefix;
+    @Getter private boolean allowPlayerMarriage;
+    @Getter private boolean enableAdminCommands;
+    @Getter private boolean allowCrashReporting;
+    @Getter private boolean allowUpdateChecking;
+    @Getter private boolean allowRoseGoldGeneration;
 
     public Config(FMLPreInitializationEvent event) {
         config = new Configuration(event.getSuggestedConfigurationFile());
@@ -66,10 +67,6 @@ public final class Config implements Serializable {
         allowRoseGoldGeneration = config.get("General", "Allow Rose Gold World Generation", true, "If enabled, generates rose gold in your world. If disabled, generates stone instead.").getBoolean();
         villagerMaxHealth = config.get("General", "Villager Max Health", 20, "Each villager's maximum health. 1 point equals 1 heart.").getInt();
         config.save();
-    }
-
-    public Configuration getInstance() {
-        return config;
     }
 
     public List<IConfigElement> getCategories() {

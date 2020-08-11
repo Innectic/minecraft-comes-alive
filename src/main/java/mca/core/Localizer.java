@@ -38,7 +38,7 @@ public class Localizer {
                 localizerMap.put(key, value);
             }
         } catch (IOException e) {
-            MCA.getLog().error("Error initializing localizer: " + e);
+            MCA.getLogger().error("Error initializing localizer: " + e);
         }
     }
 
@@ -68,7 +68,7 @@ public class Localizer {
                 str = str.replaceAll(varString, vars.get(index - 1));
             } catch (IndexOutOfBoundsException e) {
                 str = str.replaceAll(varString, "");
-                MCA.getLog().warn("Failed to replace variable in localized string: " + str);
+                MCA.getLogger().warn("Failed to replace variable in localized string: " + str);
             } finally {
                 index++;
                 varString = "%v" + index + "%";

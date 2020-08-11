@@ -77,7 +77,7 @@ public class VillagerFactory {
 	
 	public VillagerFactory spawn() {
 		if (!isPositionSet) {
-			MCA.getLog().catching(new VillagerSpawnException("Attempted to spawn villager without a position being set!"));
+			MCA.getLogger().catching(new VillagerSpawnException("Attempted to spawn villager without a position being set!"));
 		}
 		
 		villager.finalizeMobSpawn(villager.world.getDifficultyForLocation(villager.getPos()), null, false);

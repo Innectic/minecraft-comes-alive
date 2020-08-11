@@ -21,7 +21,7 @@ public abstract class AbstractEntityAIChore extends EntityAIBase {
         super.updateTask();
 
         if (!getAssigningPlayer().isPresent()) {
-            MCA.getLog().warn("Force-stopped chore because assigning player was not present.");
+            MCA.getLogger().warn("Force-stopped chore because assigning player was not present.");
             villager.stopChore();
         }
     }

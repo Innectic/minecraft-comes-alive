@@ -106,8 +106,8 @@ public class PlayerSaveData extends WorldSavedData {
             try {
                 player.sendMessage(new TextComponentString(f.getName() + " = " + f.get(this).toString()));
             } catch (Exception e) {
-                MCA.getLog().error("Error dumping player data!");
-                MCA.getLog().error(e);
+                MCA.getLogger().error("Error dumping player data!");
+                MCA.getLogger().error(e);
             }
         }
     }

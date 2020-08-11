@@ -57,14 +57,14 @@ public class API {
         Collections.addAll(skinGroups, skins);
 
         // Load names
-        InputStream namesStream = StringUtils.class.getResourceAsStream("/assets/mca/lang/names.lang");
+        InputStream namesStream = MCA.class.getResourceAsStream("/assets/mca/lang/names.lang");
         try {
             // read in all names and process into the correct list
             List<String> lines = IOUtils.readLines(namesStream, Charsets.UTF_8);
             lines.stream().filter((l) -> l.contains("name.male")).forEach((l) -> maleNames.add(l.split("\\=")[1]));
             lines.stream().filter((l) -> l.contains("name.female")).forEach((l) -> femaleNames.add(l.split("\\=")[1]));
         } catch (Exception e) {
-            MCA.getLog().fatal(e);
+            MCA.getLogger().fatal(e);
             throw new RuntimeException("Failed to load all NPC names from file", e);
         }
 
@@ -80,7 +80,7 @@ public class API {
         Gift[] gifts = Util.readResourceAsJSON("api/gifts.json", Gift[].class);
         for (Gift gift : gifts) {
             if (!gift.exists()) {
-                MCA.getLog().warn("Could not find gift item or block in registry: " + gift.getName());
+                MCA.getLogger().warn("Could not find gift item or block in registry: " + gift.getName());
             } else {
                 giftMap.put(gift.getName(), gift);
             }
@@ -121,7 +121,7 @@ public class API {
                         .findFirst();
 
         return group.map(g -> g.getPaths()[rng.nextInt(g.getPaths().length - 1)]).orElseGet(() -> {
-            MCA.getLog().warn("No skin found for profession: `" + profession.getRegistryName() + "`. A random skin will be generated.");
+            MCA.getLogger().warn("No skin found for profession: `" + profession.getRegistryName() + "`. A random skin will be generated.");
             SkinsGroup randomGroup = null;
             while (randomGroup == null || randomGroup.getGender() != gender) {
                 randomGroup = skinGroups.get(rng.nextInt(skinGroups.size() - 1));
@@ -192,7 +192,7 @@ public class API {
 
             // Ensure that if a constraint is attached to the button
             if (villager == null && b.getConstraints().size() > 0) {
-                MCA.getLog().error("No villager provided for list of buttons with constraints! Button ID:" + b.getIdentifier());
+                MCA.getLogger().error("No villager provided for list of buttons with constraints! Button ID:" + b.getIdentifier());
                 continue;
             }
 

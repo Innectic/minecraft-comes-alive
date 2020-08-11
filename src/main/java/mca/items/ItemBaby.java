@@ -86,7 +86,7 @@ public class ItemBaby extends Item {
                 child.set(EntityVillagerMCA.VILLAGER_NAME, getBabyName(stack));
                 child.set(EntityVillagerMCA.TEXTURE, API.getRandomSkin(child)); // allow for special-case skins to be applied with the proper name attached to the child at this point
                 child.set(EntityVillagerMCA.AGE_STATE, EnumAgeState.BABY.getId());
-                child.setStartingAge(MCA.getConfig().childGrowUpTime * 60 * 20 * -1);
+                child.setStartingAge(MCA.getConfig().getChildGrowUpTime() * 60 * 20 * -1);
                 child.setScaleForAge(true);
                 child.setPosition(posX, posY, posZ);
                 world.spawnEntity(child);
@@ -153,7 +153,7 @@ public class ItemBaby extends Item {
     }
 
     private boolean isReadyToGrowUp(ItemStack itemStack) {
-        return itemStack.getTagCompound().getInteger("age") >= MCA.getConfig().babyGrowUpTime;
+        return itemStack.getTagCompound().getInteger("age") >= MCA.getConfig().getBabyGrowUpTime();
     }
 
     public EnumGender getGender() {

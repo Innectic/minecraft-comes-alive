@@ -61,7 +61,9 @@ public class Util {
         String location = RESOURCE_PREFIX + path;
 
         try {
-            data = IOUtils.toString(new InputStreamReader(MCA.class.getClassLoader().getResourceAsStream(location)));
+            System.out.println("tryna read from " + MCA.class.getResource(location).toString());
+            System.out.println("tryna " + location);
+            data = IOUtils.toString(new InputStreamReader(MCA.class.getResourceAsStream(location)));
         } catch (IOException e) {
             throw new RuntimeException("Failed to read resource from JAR: " + location);
         }
@@ -143,7 +145,7 @@ public class Util {
             in.close();
             return response.toString();
         } catch (IOException ignored) {
-            MCA.getLog().error("Failed to GET from: " + url);
+            MCA.getLogger().error("Failed to GET from: " + url);
         }
         return "";
     }

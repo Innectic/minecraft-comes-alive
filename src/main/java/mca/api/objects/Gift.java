@@ -23,7 +23,7 @@ public class Gift {
         } else if (getType().equals("item")) {
             return Item.getByNameOrId(getName()) != null;
         } else {
-            MCA.getLog().warn("Could not process gift '" + getName() + "'- bad type name of '" + getType() + "'. Must be 'item' or 'block'");
+            MCA.getLogger().warn("Could not process gift '" + getName() + "'- bad type name of '" + getType() + "'. Must be 'item' or 'block'");
             return false;
         }
     }

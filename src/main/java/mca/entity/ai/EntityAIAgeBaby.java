@@ -24,7 +24,7 @@ public class EntityAIAgeBaby extends EntityAIBase {
         if (villager.ticksExisted % 1200 != 0) return;
         villager.set(EntityVillagerMCA.BABY_AGE, villager.get(EntityVillagerMCA.BABY_AGE) + 1);
 
-        if (villager.get(EntityVillagerMCA.BABY_AGE) < MCA.getConfig().babyGrowUpTime) return;
+        if (villager.get(EntityVillagerMCA.BABY_AGE) < MCA.getConfig().getBabyGrowUpTime()) return;
 
         EntityVillagerMCA child = VillagerFactory.newVillager(villager.world)
         		.withGender(villager.get(EntityVillagerMCA.BABY_IS_MALE) ? EnumGender.MALE : EnumGender.FEMALE)
@@ -32,7 +32,7 @@ public class EntityAIAgeBaby extends EntityAIBase {
         		.withPosition(villager.posX, villager.posY, villager.posZ)
         		.build();
 
-        child.setStartingAge(MCA.getConfig().childGrowUpTime * 60 * 20 * -1);
+        child.setStartingAge(MCA.getConfig().getChildGrowUpTime() * 60 * 20 * -1);
         child.setScaleForAge(true);
         child.set(EntityVillagerMCA.AGE_STATE, EnumAgeState.BABY.getId());
         

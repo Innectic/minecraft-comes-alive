@@ -36,7 +36,7 @@ public class CommandAdminMCA extends CommandBase {
     @Override
     public void execute(MinecraftServer server, ICommandSender commandSender, String[] input) throws CommandException {
         try {
-            if (!MCA.getConfig().enableAdminCommands) {
+            if (!MCA.getConfig().isEnableAdminCommands()) {
                 sendMessage(commandSender, "MCA admin commands have been disabled by the server administrator.");
                 return;
             }
@@ -48,7 +48,7 @@ public class CommandAdminMCA extends CommandBase {
             final EntityPlayer player = (EntityPlayer) commandSender;
             String subcommand = input[0].toLowerCase();
             String[] arguments = Arrays.copyOfRange(input, 1, input.length);
-            MCA.getLog().info(player.getName() + " entered debug command " + Arrays.toString(input));
+            MCA.getLogger().info(player.getName() + " entered debug command " + Arrays.toString(input));
 
             switch (subcommand) {
                 case "help": displayHelp(commandSender); break;
@@ -86,7 +86,7 @@ public class CommandAdminMCA extends CommandBase {
     private void forceBabyGrow(EntityPlayer player) {
         for (ItemStack stack : player.inventory.mainInventory) {
             if (stack.getItem() instanceof ItemBaby) {
-                stack.getTagCompound().setInteger("age", MCA.getConfig().babyGrowUpTime);
+                stack.getTagCompound().setInteger("age", MCA.getConfig().getBabyGrowUpTime());
             }
         }
         sendMessage(player, Constants.Color.GREEN + "Forced any held babies to grow up age.");

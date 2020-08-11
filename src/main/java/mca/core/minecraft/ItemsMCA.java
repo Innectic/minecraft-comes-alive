@@ -63,13 +63,13 @@ public final class ItemsMCA {
                     ITEMS.add(item);
                 }
             } catch (Exception e) {
-                MCA.getLog().error("Error while registering items: ", e);
+                MCA.getLogger().error("Error while registering items: ", e);
             }
         }
     }
 
     public static void assignCreativeTabs() {
-        ITEMS.stream().forEach(i -> i.setCreativeTab(MCA.creativeTab));
+        ITEMS.forEach(i -> i.setCreativeTab(MCA.creativeTab));
     }
 
     public static void setBookNBT(ItemStack stack) {

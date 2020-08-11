@@ -249,7 +249,7 @@ public class NetMCA {
             if (villager.isPresent()) {
                 careerId = villager.get().getCareerId();
             } else {
-                MCA.getLog().error("UUID of requested villager was not a villager or entity could not be found.");
+                MCA.getLogger().error("UUID of requested villager was not a villager or entity could not be found.");
                 return null;
             }
 
@@ -610,7 +610,7 @@ public class NetMCA {
                     }
                 }
             } else {
-                MCA.getLog().error("Entity not found on career set!: " + message.targetUUID.toString());
+                MCA.getLogger().error("Entity not found on career set!: " + message.targetUUID.toString());
                 return null;
             }
 

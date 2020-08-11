@@ -281,9 +281,7 @@ public class EntityGrimReaper extends EntityMob {
         super.onUpdate();
         extinguish(); // No fire.
 
-        if (!MCA.getConfig().allowGrimReaper) {
-            setDead();
-        }
+        if (!MCA.getConfig().isAllowGrimReaper()) setDead();
 
         EntityLivingBase entityToAttack = this.getAttackTarget();
 

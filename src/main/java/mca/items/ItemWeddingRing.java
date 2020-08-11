@@ -22,9 +22,9 @@ public class ItemWeddingRing extends ItemSpecialCaseGift {
             response = "interaction.marry.fail.marriedtoother";
         else if (playerData.isMarriedOrEngaged())
             response = "interaction.marry.fail.marriedtoother";
-        else if (this instanceof ItemEngagementRing && history.getHearts() < MCA.getConfig().marriageHeartsRequirement / 2)
+        else if (this instanceof ItemEngagementRing && history.getHearts() < MCA.getConfig().getMarriageHeartsRequirement() / 2)
             response = "interaction.marry.fail.lowhearts";
-        else if (!(this instanceof ItemEngagementRing) && history.getHearts() < MCA.getConfig().marriageHeartsRequirement)
+        else if (!(this instanceof ItemEngagementRing) && history.getHearts() < MCA.getConfig().getMarriageHeartsRequirement())
             response = "interaction.marry.fail.lowhearts";
         else {
             response = "interaction.marry.success";
