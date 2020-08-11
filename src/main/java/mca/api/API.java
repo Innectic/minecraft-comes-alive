@@ -109,11 +109,7 @@ public class API {
                 case "shepard": return "mca:skins/male/special/shepard.png";
                 case "minsc": return "mca:skins/male/special/minsc.png";
             }
-        } else if (gender == EnumGender.FEMALE) {
-            switch (name.toLowerCase()) {
-                case "pewdiepie": return "mca:skins/female/special/pewdiepie_girl.png";
-            }
-        }
+        } else if (gender == EnumGender.FEMALE && name.equalsIgnoreCase("pewdiepie")) return "mca:skins/female/special/pewdiepie_girl.png";
 
         //Default skin behavior
         Optional<SkinsGroup> group = skinGroups.stream()
