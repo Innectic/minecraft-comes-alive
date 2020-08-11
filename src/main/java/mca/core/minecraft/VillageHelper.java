@@ -10,7 +10,6 @@ import mca.entity.EntityVillagerMCA;
 import mca.entity.VillagerFactory;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.village.Village;
 

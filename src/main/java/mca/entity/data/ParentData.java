@@ -14,7 +14,6 @@ import mca.api.wrappers.WorldWrapper;
 import mca.core.Constants;
 import mca.entity.EntityVillagerMCA;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.text.TextComponentString;
 
 @Getter
 public class ParentData {

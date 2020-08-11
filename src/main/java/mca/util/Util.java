@@ -9,17 +9,19 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
+import java.util.Random;
+import java.util.TimerTask;
 import java.util.UUID;
 
 import javax.annotation.Nullable;
 
-import mca.api.objects.Pos;
-import mca.api.wrappers.WorldWrapper;
 import org.apache.commons.io.IOUtils;
 
-import java.util.Optional;
 import com.google.gson.Gson;
 
+import mca.api.objects.Pos;
+import mca.api.wrappers.WorldWrapper;
 import mca.core.MCA;
 import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
@@ -145,4 +147,19 @@ public class Util {
         }
         return "";
     }
+
+    // Returns a random pitch value for a given sound, between 0.5 and 1.5.
+	public static float randomPitchValue(Random rand) {
+		float val = 1.0F + (rand.nextBoolean() ? rand.nextFloat() : rand.nextFloat() * -1);
+		return val > 1.5F ? 1.5F : val < 0.5F ? 0.5F : val;
+	}
+
+	public static void scheduleFutureTask(FutureTask futureTask, int ms) {
+		new java.util.Timer().schedule(new java.util.TimerTask() {
+			@Override
+			public void run() {
+				futureTask.run();
+			}
+		}, ms);
+	}
 }

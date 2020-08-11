@@ -4,18 +4,21 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.NoSuchElementException;
+import java.util.Optional;
 import java.util.UUID;
 
-import java.util.Optional;
 import com.google.common.base.Predicate;
 
 import lombok.Getter;
 import lombok.Setter;
 import mca.api.API;
-import mca.api.objects.*;
+import mca.api.objects.APIButton;
+import mca.api.objects.NPC;
+import mca.api.objects.Player;
+import mca.api.objects.Pos;
+import mca.api.platforms.VillagerPlatform;
 import mca.api.wrappers.DataManagerWrapper;
 import mca.api.wrappers.NBTWrapper;
-import mca.api.platforms.VillagerPlatform;
 import mca.core.Constants;
 import mca.core.MCA;
 import mca.core.forge.NetMCA;
@@ -48,12 +51,21 @@ import mca.enums.EnumMoveState;
 import mca.items.ItemSpecialCaseGift;
 import mca.util.ItemStackCache;
 import mca.util.ResourceLocationCache;
+import mca.util.Util;
 import net.minecraft.entity.SharedMonsterAttributes;
-import net.minecraft.entity.ai.*;
+import net.minecraft.entity.ai.EntityAIAttackMelee;
+import net.minecraft.entity.ai.EntityAIAvoidEntity;
+import net.minecraft.entity.ai.EntityAIBase;
+import net.minecraft.entity.ai.EntityAILookIdle;
+import net.minecraft.entity.ai.EntityAIMoveThroughVillage;
+import net.minecraft.entity.ai.EntityAINearestAttackableTarget;
+import net.minecraft.entity.ai.EntityAITasks;
+import net.minecraft.entity.ai.EntityAIWatchClosest;
+import net.minecraft.entity.ai.RandomPositionGenerator;
+import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.monster.EntityVex;
 import net.minecraft.entity.monster.EntityVindicator;
 import net.minecraft.entity.monster.EntityZombie;
-import net.minecraft.entity.passive.EntityVillager;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Items;
 import net.minecraft.init.SoundEvents;
@@ -75,7 +87,6 @@ import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.world.World;
-import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
 import net.minecraftforge.fml.common.registry.VillagerRegistry;
 
 public class EntityVillagerMCA extends VillagerPlatform {
@@ -177,12 +188,13 @@ public class EntityVillagerMCA extends VillagerPlatform {
 
     @Override
     public void load(NBTWrapper nbt) {
-    	this.dataManager.loadAll(nbt);
-        inventory.readInventoryFromNBT(nbt.getTagList("inventory", 10));
-
         // Vanilla Age doesn't apply from the superclass call. Causes children to revert to the starting age on world reload.
+    	// Do not move this as the loadAll call below relies on the starting age to be set properly.
         this.startingAge = nbt.getInteger("startingAge");
         setGrowingAge(nbt.getInteger("Age"));
+        
+    	this.dataManager.loadAll(nbt);
+        inventory.readInventoryFromNBT(nbt.getTagList("inventory", 10));
 
         this.home = new Pos(nbt.getDouble("homePositionX"), nbt.getDouble("homePositionY"), nbt.getDouble("homePositionZ"));
         this.playerToFollowUUID = nbt.getUUID("playerToFollowUUID");
@@ -193,6 +205,7 @@ public class EntityVillagerMCA extends VillagerPlatform {
     @Override
     public void save(NBTWrapper nbt) {
     	this.dataManager.saveAll(nbt);
+    	nbt.setInteger("startingAge", this.startingAge);
     	nbt.setTag("inventory", inventory.writeInventoryToNBT());
     }
 
@@ -214,7 +227,7 @@ public class EntityVillagerMCA extends VillagerPlatform {
     @Override
     public void update() {
         updateSwinging();
-
+        
         if (this.isServerWorld()) {
             onEachServerUpdate();
         } else {
@@ -540,7 +553,11 @@ public class EntityVillagerMCA extends VillagerPlatform {
             case "gui.button.follow":
                 set(MOVE_STATE, EnumMoveState.FOLLOW.getId());
                 this.playerToFollowUUID = player.getUniqueID();
-                stopChore();
+                
+                // Prospecting allows for following at the same time as it is passive.
+                if (EnumChore.byId(get(ACTIVE_CHORE)) != EnumChore.PROSPECT) {
+                    stopChore();
+                }
                 break;
             case "gui.button.ridehorse":
                 toggleMount(player);
@@ -704,8 +721,22 @@ public class EntityVillagerMCA extends VillagerPlatform {
     private void onEachServerSecond() {
         NBTTagCompound memories = get(PLAYER_HISTORY_MAP);
         memories.getKeySet().forEach((key) -> PlayerHistory.fromNBT(this, UUID.fromString(key), memories.getCompoundTag(key)).update());
+        
+        // 3% chance per second to pick up items off the ground.
+        if (world.rand.nextFloat() <= 0.03F) {
+            pickUpNearbyItems();
+        }
     }
 
+    private void pickUpNearbyItems() {
+    	world.getEntitiesWithinAABB(EntityItem.class, this.getEntityBoundingBox().grow(2.0D)).forEach(itemEntity -> {
+    		this.inventory.addItem(itemEntity.getItem());
+    		this.playSound(SoundEvents.ENTITY_ITEM_PICKUP, 1.0F, Util.randomPitchValue(world.rand));
+    		this.swingArm(EnumHand.MAIN_HAND);
+    		itemEntity.setDead();
+    	});
+    }
+    
     public ResourceLocation getTextureResourceLocation() {
         if (get(IS_INFECTED)) {
             return ResourceLocationCache.getResourceLocationFor(String.format("mca:skins/%s/zombievillager.png", get(GENDER) == EnumGender.MALE.getId() ? "male" : "female"));

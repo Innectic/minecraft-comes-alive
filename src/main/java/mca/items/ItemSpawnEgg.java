@@ -7,10 +7,12 @@ import mca.enums.EnumGender;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.ActionResult;
 import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.world.World;
 
 public class ItemSpawnEgg extends Item {
@@ -23,13 +25,18 @@ public class ItemSpawnEgg extends Item {
 
     @Override
     public EnumActionResult onItemUse(EntityPlayer player, World world, BlockPos pos, EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ) {
-        int posX = pos.getX();
-        int posY = pos.getY() + 1;
-        int posZ = pos.getZ();
-
+        RayTraceResult rtr = this.rayTrace(world, player, true);
+        if (rtr == null || rtr.typeOfHit != RayTraceResult.Type.BLOCK) {
+        	return EnumActionResult.PASS;
+        }
+        
+        double posX = rtr.hitVec.x;
+        double posY = rtr.hitVec.y;
+        double posZ = rtr.hitVec.z;
+        
         if (!world.isRemote) {
             EntityVillagerMCA villager = VillagerFactory.newVillager(new WorldWrapper(world)).withGender(isMale ? EnumGender.MALE : EnumGender.FEMALE).build();
-            villager.setPosition(posX + 0.5D, posY, posZ + 0.5D);
+            villager.setPosition(posX, posY, posZ);
             villager.finalizeMobSpawn(world.getDifficultyForLocation(villager.getPos()), null, false);
             world.spawnEntity(villager);
 

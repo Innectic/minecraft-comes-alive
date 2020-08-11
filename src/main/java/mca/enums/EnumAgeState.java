@@ -15,7 +15,7 @@ public enum EnumAgeState {
     TODDLER(1, 0.3f, 0.6f, 0.5f),
     CHILD(2, 0.5f, 1.1f, 1f),
     TEEN(3, 0.6f, 1.6f, 1.35f),
-    ADULT(4, 0.8f, 2f, 1.5f);
+    ADULT(4, 0.8f, 2f, 1.45f);
 
     int id;
     float width;

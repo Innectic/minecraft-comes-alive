@@ -42,9 +42,14 @@ public class CommandMCA extends CommandBase {
             final MCAServer mcaServer = MCAServer.get();
             String subcommand = input[0].toLowerCase();
             String[] arguments = Arrays.copyOfRange(input, 1, input.length);
-            Optional<Player> target = player.world.getPlayerEntityByName(arguments[0]);
+            
             MCA.getLog().info(player.getName() + " entered command " + Arrays.toString(input));
 
+            Optional<Player> target = Optional.empty();
+            if (arguments.length > 0) {
+            	player.world.getPlayerEntityByName(arguments[0]);
+            }
+            
             switch (subcommand) {
                 case "help":
                     displayHelp(commandSender);

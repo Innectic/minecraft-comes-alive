@@ -2,8 +2,6 @@ package mca.items;
 
 import java.util.List;
 
-import java.util.Optional;
-
 import mca.api.API;
 import mca.api.wrappers.WorldWrapper;
 import mca.core.Constants;
@@ -26,11 +24,12 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ActionResult;
+import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.FMLCommonHandler;
-import net.minecraftforge.fml.common.registry.VillagerRegistry;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -65,15 +64,20 @@ public class ItemBaby extends Item {
 
     @Override
     public ActionResult<ItemStack> onItemRightClick(World world, EntityPlayer player, EnumHand hand) {
-        BlockPos pos = player.getPosition();
+        RayTraceResult rtr = this.rayTrace(world, player, true);
+        if (rtr == null || rtr.typeOfHit != RayTraceResult.Type.BLOCK) {
+        	return new ActionResult<ItemStack>(EnumActionResult.PASS, player.getHeldItem(hand));
+        }
+        
         ItemStack stack = player.getHeldItem(hand);
-        int posX = pos.getX();
-        int posY = pos.getY() + 1;
-        int posZ = pos.getZ();
+        double posX = rtr.hitVec.x;
+        double posY = rtr.hitVec.y;
+        double posZ = rtr.hitVec.z;
 
         // Right-clicking an unnamed baby allows you to name it
-        if (world.isRemote && getBabyName(stack).equals(""))
-            player.openGui(MCA.getInstance(), Constants.GUI_ID_NAMEBABY, player.world, player.getEntityId(), 0, 0);
+        if (world.isRemote && getBabyName(stack).equals("")) {
+            player.openGui(MCA.getInstance(), Constants.GUI_ID_NAMEBABY, player.world, player.getEntityId(), 0, 0);	
+        }
 
         if (!world.isRemote) {
             if (isReadyToGrowUp(stack) && !getBabyName(stack).equals("")) { // Name is good and we're ready to grow

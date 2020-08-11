@@ -14,7 +14,6 @@ import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemAxe;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumHand;
-import net.minecraft.util.math.BlockPos;
 
 public class EntityAIChopping extends AbstractEntityAIChore {
     private int chopTicks;

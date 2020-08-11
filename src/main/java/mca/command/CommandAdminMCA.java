@@ -1,9 +1,8 @@
 package mca.command;
 
 import java.util.Arrays;
-import java.util.UUID;
-
 import java.util.Optional;
+import java.util.UUID;
 
 import mca.core.Constants;
 import mca.core.MCA;

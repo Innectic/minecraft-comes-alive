@@ -8,7 +8,6 @@ import mca.entity.EntityVillagerMCA;
 import mca.entity.data.PlayerHistory;
 import mca.entity.data.PlayerSaveData;
 import mca.enums.EnumDialogueType;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.EnumParticleTypes;
 
 public class ItemWeddingRing extends ItemSpecialCaseGift {

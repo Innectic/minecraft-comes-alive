@@ -17,7 +17,6 @@ import mca.entity.EntityGrimReaper;
 import mca.entity.EntityVillagerMCA;
 import mca.entity.data.PlayerSaveData;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.text.TextComponentString;
 
 public class MCAServer {
     private static MCAServer instance;

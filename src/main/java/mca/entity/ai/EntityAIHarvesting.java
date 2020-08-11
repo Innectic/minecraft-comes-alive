@@ -16,7 +16,6 @@ import net.minecraft.item.ItemHoe;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.NonNullList;
-import net.minecraft.util.math.BlockPos;
 
 public class EntityAIHarvesting extends AbstractEntityAIChore {
     private int blockWork = 0;

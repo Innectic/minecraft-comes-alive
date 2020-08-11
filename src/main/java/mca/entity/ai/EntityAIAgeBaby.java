@@ -1,8 +1,8 @@
 package mca.entity.ai;
 
 import mca.core.MCA;
-import mca.entity.VillagerFactory;
 import mca.entity.EntityVillagerMCA;
+import mca.entity.VillagerFactory;
 import mca.entity.data.ParentData;
 import mca.enums.EnumAgeState;
 import mca.enums.EnumGender;

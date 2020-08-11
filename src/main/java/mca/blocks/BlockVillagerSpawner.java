@@ -3,11 +3,11 @@ package mca.blocks;
 import java.util.Random;
 
 import mca.api.objects.Pos;
-import mca.api.wrappers.WorldWrapper;
 import mca.api.platforms.BlockPlatform;
+import mca.api.wrappers.WorldWrapper;
 import mca.core.MCA;
-import mca.entity.VillagerFactory;
 import mca.entity.EntityVillagerMCA;
+import mca.entity.VillagerFactory;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.util.math.AxisAlignedBB;

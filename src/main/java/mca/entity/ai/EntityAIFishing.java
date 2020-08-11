@@ -14,7 +14,6 @@ import net.minecraft.item.ItemFishFood;
 import net.minecraft.item.ItemFishingRod;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumHand;
-import net.minecraft.util.math.BlockPos;
 
 public class EntityAIFishing extends AbstractEntityAIChore {
     private Pos targetWater;

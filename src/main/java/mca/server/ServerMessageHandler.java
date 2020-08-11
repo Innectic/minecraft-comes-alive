@@ -3,8 +3,6 @@ package mca.server;
 import mca.api.objects.PlayerMP;
 import mca.core.forge.NetMCA;
 import mca.core.minecraft.VillageHelper;
-import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.util.text.TextComponentString;
 
 public class ServerMessageHandler {
 

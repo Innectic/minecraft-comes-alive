@@ -4,15 +4,17 @@ import java.awt.Toolkit;
 import java.awt.datatransfer.StringSelection;
 import java.io.IOException;
 
-import mca.api.objects.Player;
 import org.lwjgl.input.Keyboard;
 
 import mca.api.API;
 import mca.api.objects.APIButton;
+import mca.api.objects.Player;
 import mca.client.gui.component.GuiButtonEx;
 import mca.core.MCA;
 import mca.core.forge.NetMCA;
 import mca.entity.EntityVillagerMCA;
+import mca.util.FutureTask;
+import mca.util.Util;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
@@ -70,6 +72,10 @@ public class GuiVillagerEditor extends GuiScreen {
         APIButton btn = ((GuiButtonEx) guiButton).getApiButton();
         if (btn.isNotifyServer()) {
             NetMCA.INSTANCE.sendToServer(new NetMCA.ButtonAction("editor", btn.getIdentifier(), villager.getUniqueID()));
+            Util.scheduleFutureTask(() -> {
+            	professionTextField.setText(villager.getVanillaCareer().getName());
+            	textureTextField.setText(villager.get(EntityVillagerMCA.TEXTURE));
+            }, 1000);
         } else if (btn.getIdentifier().equals("gui.button.done")) {
             mc.displayGuiScreen(null);
         } else if (btn.getIdentifier().equals("gui.button.copyuuid")) {
@@ -78,13 +84,9 @@ public class GuiVillagerEditor extends GuiScreen {
         } else if (btn.getIdentifier().equals("gui.button.profession.set")) {
             String profession = professionTextField.getText();
             NetMCA.INSTANCE.sendToServer(new NetMCA.SetProfession(villager.getUniqueID(), profession));
-            new java.util.Timer().schedule(new java.util.TimerTask() {
-                        @Override
-                        public void run() {
-                            NetMCA.INSTANCE.sendToServer(new NetMCA.CareerRequest(villager.getUniqueID()));
-                        }
-                    },500
-            );
+            Util.scheduleFutureTask(() -> {
+            	NetMCA.INSTANCE.sendToServer(new NetMCA.CareerRequest(villager.getUniqueID()));
+            }, 500);
         } else if (btn.getIdentifier().contains("gui.button.texture")) {
             String texture = btn.getIdentifier().endsWith(".set") ? textureTextField.getText() : API.getRandomSkin(villager);
             NetMCA.INSTANCE.sendToServer(new NetMCA.SetTexture(villager.getUniqueID(), texture));

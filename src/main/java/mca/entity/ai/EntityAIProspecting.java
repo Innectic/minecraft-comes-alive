@@ -9,7 +9,6 @@ import net.minecraft.block.BlockOre;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemPickaxe;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.math.BlockPos;
 
 public class EntityAIProspecting extends AbstractEntityAIChore {
     private int ticks;

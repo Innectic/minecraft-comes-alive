@@ -1,8 +1,8 @@
 package mca.client.render;
 
-import mca.api.objects.Pos;
 import org.lwjgl.opengl.GL11;
 
+import mca.api.objects.Pos;
 import mca.client.model.ModelVillagerMCA;
 import mca.entity.EntityVillagerMCA;
 import mca.enums.EnumAgeState;
@@ -19,8 +19,6 @@ import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class RenderVillagerMCA<T extends EntityVillagerMCA> extends RenderBiped<EntityVillagerMCA> {
     private static final ResourceLocation gui = new ResourceLocation("mca:textures/gui.png");
@@ -37,11 +35,25 @@ public class RenderVillagerMCA<T extends EntityVillagerMCA> extends RenderBiped<
         if (villager.isChild()) {
             float scaleForAge = EnumAgeState.byId(villager.get(EntityVillagerMCA.AGE_STATE)).getScaleForAge();
             GlStateManager.scale(scaleForAge, scaleForAge, scaleForAge);
+            return;
         }
 
         if (villager.isRiding()) {
-            GlStateManager.translate(0, 0.5, 0);
+        	EnumAgeState ageState = EnumAgeState.byId(villager.get(EntityVillagerMCA.AGE_STATE));
+        	float modY = 0.0F;
+        	switch (ageState) {
+	        	case BABY: modY = -0.2F; break;
+	        	case TODDLER: modY = -0.1F; break;
+	        	case CHILD: modY = 0.15F; break;
+	        	case TEEN: modY = 0.20F; break;
+        	default:
+        		modY = 0.5F;
+        	}
+        	
+            GlStateManager.translate(0, modY, 0);
         }
+        
+        GlStateManager.scale(0.9375F, 0.9375F, 0.9375F);
     }
 
     @Override
