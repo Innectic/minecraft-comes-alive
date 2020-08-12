@@ -80,3 +80,7 @@ processResources {
 jar {
     classifier = 'universal'
 }
+
+sourceSets {
+    main { output.resourcesDir = output.classesDir }
+}
